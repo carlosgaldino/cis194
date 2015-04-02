@@ -2,4 +2,4 @@
 
 Solutions to the exercises of the mentioned class.
 
-[class]: http://www.seas.upenn.edu/~cis194/lectures.html
+[class]: http://www.seas.upenn.edu/~cis194/fall14/spring13/index.html
