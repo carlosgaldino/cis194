@@ -2,7 +2,7 @@
 
 module Golf where
 
-import Data.List (transpose, intercalate)
+import Data.List (transpose)
 
 skips :: [a] -> [[a]]
 skips xs = map (\n -> skip n xs) idxs
@@ -13,7 +13,7 @@ localMaxima :: [Integer] -> [Integer]
 localMaxima xs = map (\(_, x, _) -> x) . filter (\(x, y, z) -> y > x && y > z) $ zip3 xs (tail xs) (drop 2 xs)
 
 histogram :: [Int] -> String
-histogram xs = intercalate "\n" $ hist xs ++ [base]
+histogram xs = unlines $ hist xs ++ [base]
   where max  = maximum $ frequences xs
         hist = transpose . map (complete max) . points . frequences
 
