@@ -9,6 +9,24 @@ fun2 :: Integer -> Integer
 fun2 = sum . filter even . takeWhile (/= 1) . iterate f
   where f n = if even n then n `div` 2 else 3 * n + 1
 
+data Tree a = Leaf | Node Integer (Tree a) a (Tree a)
+  deriving (Show, Eq)
+
+foldTree :: [a] -> Tree a
+foldTree = foldr insert Leaf
+
+insert :: a -> Tree a -> Tree a
+insert x Leaf = Node 0 Leaf x Leaf
+insert x (Node _ l v r)
+  | height l <= height r = Node (maxHeight (newNode l) r + 1) (newNode l) v r
+  | otherwise = Node (maxHeight l (newNode r) + 1) l v (newNode r)
+  where maxHeight l r = max (height l) (height r)
+        newNode t = insert x t
+
+height :: Tree a -> Integer
+height Leaf = -1
+height (Node h _ _ _) = h
+
 xor :: [Bool] -> Bool
 xor = foldl (\x y -> not (x == y)) False
 
