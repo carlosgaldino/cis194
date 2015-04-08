@@ -19,3 +19,8 @@ map' f = foldr (\x y -> f x : y) []
 myFoldl :: (a -> b -> a) -> a -> [b] -> a
 myFoldl f z xs = foldr step id xs z
   where step x g a = g (f a x)
+
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram n = 2:[2 * x + 1 | x <- [1..n], not (x `elem` excludingList n)]
+  where excludingList n = [i + j + 2 * i * j | i <- [1..n], j <- [i..maxJ i]]
+        maxJ i = (n - i) `div` (1 + 2 * i)
