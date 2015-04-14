@@ -1,6 +1,4 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving
-           , ScopedTypeVariables
-   #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving , ScopedTypeVariables #-}
 module Editor where
 
 import System.IO
