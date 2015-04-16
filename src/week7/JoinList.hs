@@ -14,7 +14,7 @@ data JoinList m a = Empty
   deriving (Eq, Show)
 
 (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
-x +++ y = Append ((tag x) <> (tag y)) x y
+x +++ y = Append (tag x <> tag y) x y
 
 tag :: Monoid m => JoinList m a -> m
 tag Empty          = mempty
@@ -24,8 +24,8 @@ tag (Append x _ _) = x
 (!!?) :: [a] -> Int -> Maybe a
 [] !!? _        = Nothing
 _ !!? i | i < 0 = Nothing
-(x:xs) !!? 0    = Just x
-(x:xs) !!? i    = xs !!? (i-1)
+(x:_) !!? 0    = Just x
+(_:xs) !!? i    = xs !!? (i-1)
 
 jlToList :: JoinList m a -> [a]
 jlToList Empty            = []
@@ -50,10 +50,12 @@ dropJ _ (Single _ _) = Empty
 dropJ i (Append m l r)
   | i >= getSize (size m) = Empty
   | i >= sz l = dropJ (i - sz l) r
-  | otherwise = (dropJ i l) +++ r
+  | otherwise = dropJ i l +++ r
 
+verifyDrop :: (Sized m, Monoid m, Eq a) => Int -> JoinList m a -> Bool
 verifyDrop n jl = jlToList (dropJ n jl) == drop n (jlToList jl)
 
+verifyTake :: (Sized m, Monoid m, Eq a) => Int -> JoinList m a -> Bool
 verifyTake n jl = jlToList (takeJ n jl) == take n (jlToList jl)
 
 takeJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
@@ -61,7 +63,7 @@ takeJ _ Empty = Empty
 takeJ i jl
   | i <= 0 = Empty
   | i >= sz jl = jl
-takeJ i (Append m l r)
+takeJ i (Append _ l r)
   | i < sz l = takeJ i l
   | otherwise = l +++ takeJ (i - sz l) r
 
@@ -84,6 +86,7 @@ instance Buffer JLBuffer where
   value = getScore . fst . tag
     where getScore (Score i) = i
 
+main :: IO ()
 main = runEditor editor jlb
   where jlb = fromString $ unlines
          [ "This buffer is for notes you don't want to save, and for"
