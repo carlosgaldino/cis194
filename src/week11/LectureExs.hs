@@ -4,6 +4,8 @@ import Control.Applicative (Applicative, (<$>), (<*>), pure, liftA2)
 
 (*>) :: Applicative f => f a -> f b -> f b
 f *> g = liftA2 (const id) f g
+-- or
+-- (*>) = liftA2 (const id)
 
 mapA :: Applicative f => (a -> f b) -> ([a] -> f [b])
 mapA f = \xs -> sequenceA $ f <$> xs
