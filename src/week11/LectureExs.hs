@@ -1,6 +1,6 @@
 module LectureExs where
 
-import Control.Applicative
+import Control.Applicative (Applicative, (<$>), (<*>), pure, liftA2)
 
 (*>) :: Applicative f => f a -> f b -> f b
 f *> g = liftA2 (const id) f g
