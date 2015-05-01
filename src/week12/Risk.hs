@@ -60,6 +60,23 @@ battle b = do
           defendingUnits = snd units
           units = maxUnits b
 
+defeat :: Battlefield -> Bool
+defeat b = attackers b < 2 || defenders b == 0
+
+invade :: Battlefield -> Rand StdGen Battlefield
+invade b = do
+  bfield <- battle b
+  if defeat bfield then return bfield else invade bfield
+
+defl :: Battlefield -> Bool
+defl b = defenders b == 0
+
+successProb :: Battlefield -> Rand StdGen Double
+successProb b = do
+  invasions <- replicateM 1000 (invade b)
+  let defenseLosses = foldr (\x a -> if defl x then a + 1 else a) 0 invasions
+  return (fromIntegral defenseLosses / 1000)
+
 main :: IO ()
 main = do
   att <- readLn :: IO Int
